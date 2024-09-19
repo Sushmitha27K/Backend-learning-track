@@ -1,0 +1,179 @@
+kiranastore-backend/
+│
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── kiranastore/
+│   │   │           ├── config/
+│   │   │           ├── controller/
+│   │   │           ├── dto/
+│   │   │           ├── exception/
+│   │   │           ├── model/
+│   │   │           ├── repository/
+│   │   │           ├── service/
+│   │   │           ├── util/
+│   │   │           └── KiranastoreApplication.java
+│   │   └── resources/
+│   │       └── application.properties
+│   └── test/
+│       └── java/
+│           └── com/
+│               └── kiranastore/
+│                   └── KiranastoreApplicationTests.java
+├── pom.xml
+└── README.md
+==================================================================================
+Application file(main class)
+
+package com.kiranastore;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class KiranastoreApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(KiranastoreApplication.class, args);
+    }
+}
+==================================================================================
+
+Entity package
+
+package com.kiranastore.model;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "transactions")
+public class Transaction {
+    @Id
+    private String id;
+    private double amount;
+    private String currency;
+    private String type; // CREDIT or DEBIT
+    private String date; // Store date as a string or use LocalDate
+
+    // Getters and Setters
+}
+====================================================================================
+
+dto package
+
+package com.kiranastore.dto;
+
+public class TransactionDTO {
+    private double amount;
+    private String currency;
+    private String type;
+    private String date;
+
+    // Getters and Setters
+}
+=====================================================================================
+Repository package
+
+package com.kiranastore.repository;
+
+import com.kiranastore.model.Transaction;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface TransactionRepository extends MongoRepository<Transaction, String> {
+    // Custom query methods can be defined here
+}
+==========================================================================================
+Service package
+
+package com.kiranastore.repository;
+
+import com.kiranastore.model.Transaction;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface TransactionRepository extends MongoRepository<Transaction, String> {
+    // Custom query methods can be defined here
+}
+==========================================================================================
+Controller package
+
+package com.kiranastore.controller;
+
+import com.kiranastore.dto.TransactionDTO;
+import com.kiranastore.model.Transaction;
+import com.kiranastore.service.TransactionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/transactions")
+public class TransactionController {
+
+    @Autowired
+    private TransactionService transactionService;
+
+    @PostMapping
+    public ResponseEntity<Transaction> recordTransaction(@RequestBody TransactionDTO transactionDTO) {
+        Transaction transaction = transactionService.saveTransaction(transactionDTO);
+        return ResponseEntity.ok(transaction);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Transaction>> getAllTransactions() {
+        List<Transaction> transactions = transactionService.getAllTransactions();
+        return ResponseEntity.ok(transactions);
+    }
+
+    // Additional endpoints for reporting and insights
+}
+========================================================================================================
+exception package
+
+package com.kiranastore.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class TransactionException extends RuntimeException {
+    public TransactionException(String message) {
+        super(message);
+    }
+}
+==========================================================================================================
+
+spring.application.name=kiranastore
+
+
+spring.data.mongodb.uri=mongodb://localhost:27017/kiranastore
+spring.data.mongodb.username=root
+spring.data.mongodb.password=Dumbu@21
+spring.data.mongodb.driver-class-name=com.mysql.cj.jdbc.Driver
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+
+server.servlet.session.tracking-modes=cookie
+
+=======================================================================================================
+Tools and Libraries
+Spring Boot: For the framework.
+MongoDB: For the database.
+Postman: For API testing.
+=======================================================================================================
+Delivery
+Use Postman to create a collection for your APIs.
+Create a GitHub repository and push your code there.
+Include a README.md for documentation.
+=======================================================================================================
+Testing
+Consider using JUnit for unit tests to ensure code quality.
+=======================================================================================================
+Documentation
+Document your APIs using Swagger or provide clear comments and descriptions in your code.
+This outline provides a foundational structure for your Kirana store backend service. You will need to expand on each component to include full functionality as specified in the requirements.
+
+
